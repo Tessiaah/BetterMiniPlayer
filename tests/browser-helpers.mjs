@@ -7,6 +7,8 @@ export async function launchExtension() {
   const context = await chromium.launchPersistentContext('', {
     headless: process.env.HEADLESS !== 'false',
     viewport: null, // Don't override the Document PiP window's requested dimensions.
+    // Exercise normal background/occlusion policy, not Playwright's overrides.
+    ignoreDefaultArgs: ['--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'],
     ...(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : { channel: 'chromium' }),
     args: ['--enable-unsafe-extension-debugging', `--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
   });

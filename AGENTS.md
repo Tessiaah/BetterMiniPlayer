@@ -33,6 +33,8 @@ Node 22+; `npm ci`, `npx playwright install chromium`, `npm run check`. Load `di
 
 Set `BROWSER_EXECUTABLE` to a browser path for Brave/Edge testing; `HEADLESS=false` opens visible test windows. Always use temporary profiles, never attach to a user's everyday profile. Tests use the browser-target CDP Extensions.triggerAction on a *tab* target to exercise the real toolbar action and activation. This testing protocol requires a recent Chromium, although the extension runtime targets 116+. Disable viewport emulation (`viewport: null`) so tests do not override the native PiP's requested dimensions. Some Chromium builds report a background PiP opener as visible; assert tabActive=false and actual mirror frame delivery. Poll the source using timers/evaluate, since hidden documents may stop requestAnimationFrame. Temporary buffering/seek readyState drops are not source destruction and must not close PiP.
 
+Keep Playwright's background-throttling/occlusion overrides disabled via ignoreDefaultArgs. Live YouTube and all 7 visible Brave browser tests also pass with normal background/occlusion policy. GitHub's Windows/Edge check passed for the initial implementation.
+
 Inspect the extension service worker via the extensions page. Inspect the mini-player with DevTools. Toolbar errors appear as `!` and a descriptive hover title; YouTube errors also show a temporary notice. Use `.local/` for private probes/profiles and `test-results/` for output; never commit them.
 
 ## API limitations and sources
