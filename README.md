@@ -13,7 +13,7 @@ The repository includes a ready-to-load `dist` folder. **No build is needed to i
 
 ## Use
 
-Open a YouTube video, dismiss any YouTube consent dialog, and start playback. Click the extension icon to pop it out. Drag the browser's PiP title bar to move it, and drag its edges to resize. Hover or focus the window to show controls. Click the icon again, the mini-player's close button, or the window's native close button to return to the tab without changing your playback state or position.
+Open a YouTube video, dismiss any YouTube consent dialog, and start playback. Click the extension icon to pop it out. Drag the browser's PiP title bar to move it, and drag its edges to resize. Move the mouse over the video to show controls; leaving the video or losing window focus hides all controls, text, and shading, including while paused. Keyboard interaction also reveals controls. Click the icon again, the mini-player's close button, or the window's native close button to return to the tab without changing your playback state or position.
 
 Keyboard shortcuts inside the mini-player: **Space / K** for play/pause, **Left / J** for backward 10 seconds, **Right / L** for forward 10 seconds, and **Escape** to close. YouTube's page controls remain synchronized. Navigation to another video closes the mini-player; click the icon to open the new video.
 
@@ -23,6 +23,7 @@ Keyboard shortcuts inside the mini-player: **Space / K** for play/pause, **Left 
 - The browser provides always-on-top behavior. Borderless games depend on the OS/game; exclusive fullscreen and other topmost windows may cover PiP. Game overlays have not been tested.
 - Keep the source tab open. There is no server, native helper, or independent video download.
 - The video keeps its proportions inside the window. The browser controls the outer window's shape and placement.
+- Document PiP keeps a browser-owned title bar and window frame. Extensions cannot hide or restyle that frame, so the window cannot exactly match Brave's borderless native video PiP. Everything inside the frame hides when the pointer leaves. See the [Chromium API discussion](https://github.com/WICG/document-picture-in-picture/issues/121#issuecomment-2152692993).
 - Ordinary YouTube videos are the initial scope. Protected/DRM media can block mirroring. YouTube captions and other page overlays aren't mirrored. Ads disable seeking; live seeking stays within the available DVR window.
 - A toolbar `!` indicates an error: hover the icon for details. Errors on YouTube also show a temporary notice. Reload the source tab after reloading/updating the unpacked extension.
 

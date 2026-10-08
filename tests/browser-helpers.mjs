@@ -29,6 +29,8 @@ export async function openPip(context, trigger, page) {
   await trigger(page);
   const pip = await popup;
   await pip.waitForSelector('.player');
+  // Controls are intentionally hidden until the pointer enters the player.
+  await pip.mouse.move(20, 20);
   return pip;
 }
 

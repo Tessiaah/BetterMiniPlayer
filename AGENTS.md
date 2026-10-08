@@ -22,7 +22,7 @@ Strict TypeScript, native DOM APIs, small focused modules. Use textContent for p
 
 Paused video capture may provide no new frames; use a canvas still of the actual source after pause/seek. Do not temporarily play a paused original to initialize the mirror. Stop every captured audio track, including late-added tracks. Streams can replace tracks at end/replay; refresh on addtrack/removetrack. Cleanup is idempotent.
 
-Do not lock out pause while play() waits for buffering. Each click reads source.paused; an intentional pause can abort a pending play request, and AbortError should not appear as a playback failure. Keep overlays visible for keyboard focus-visible, while mouse focus permits the idle fade.
+Do not lock out pause while play() waits for buffering. Each click reads source.paused; an intentional pause can abort a pending play request, and AbortError should not appear as a playback failure. All extension overlays hide on pointerleave/window blur, including while paused; source media events must never force controls back on. Pointer activity and explicit keyboard interaction reveal controls. Do not use a CSS focus-visible override to defeat pointerleave hiding. Hide feedback with the overlay and prevent invisible controls from receiving clicks. Playback retains the idle fade while hovered; pause keeps controls visible only if already hovered/keyboard-active.
 
 YouTube navigation, replacement/removed video, source changes, tab closure, and media errors close the mini-player; users reopen for the next video. Keeping a detached stale source alive or following a different video automatically is unsafe. A visible PiP-window timer monitors fallback conditions; event listeners handle immediate navigation/unload. Runtime failures produce a clear on-page notice.
 
@@ -40,12 +40,16 @@ Inspect the extension service worker via the extensions page. Inspect the mini-p
 ## API limitations and sources
 Document PiP requires desktop support, a secure top-level document, user activation, and browser/OS permission. Chromium launched it in 116; browser settings/policies may disable it. No native-PiP fallback because that loses custom controls. Browser chrome provides dragging/resizing and owns window placement. CSS object-fit preserves the video aspect ratio within freely resized windows; the API cannot enforce the outer window aspect ratio or set its position. Always-on-top is OS controlled; exclusive-fullscreen games or competing topmost windows can cover it. It cannot outlive its source tab. Ordinary YouTube videos are the scope; DRM/tainted media, captions rendered outside the video, and ads' skip UI aren't mirrored. Seeking is disabled during ads and unseekable live streams.
 
+The browser-owned Document PiP title bar and frame cannot be removed with HTML/CSS or requestWindow options. Chromium's frame source allocates a separate non-client top area, and its options only expose size, return-to-tab button, and initial placement. Hiding our overlays produces clean video within the content area, not a frameless native-PiP window. Preserve custom controls and document this limitation; do not silently switch to native PiP or promise a borderless window.
+
 Primary research:
 - https://developer.chrome.com/docs/web-platform/document-picture-in-picture
 - https://developer.chrome.com/docs/extensions/develop/concepts/activeTab
 - https://www.w3.org/TR/mediacapture-fromelement/ (paused frames, changing tracks, origin restrictions)
 - https://chromium.googlesource.com/chromium/src.git/+/8e21953ab08e31a8cc63de007888b9a8097334b9/extensions/browser/scripting_utils.cc (injection user activation)
 - https://issues.chromium.org/issues/40857662 (historical hidden-opener frame delivery bug, fixed)
+- https://github.com/WICG/document-picture-in-picture/issues/121#issuecomment-2152692993 (browser-owned title bar limitation)
+- https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/modules/document_picture_in_picture/document_picture_in_picture_options.idl (available window options)
 
 ## Verification record
 2026-10-08, Windows:
@@ -55,3 +59,4 @@ Primary research:
 - Browser/OS dragging and topmost behavior are provided by Document PiP; no game or exclusive-fullscreen overlay test was performed. Direct audio audibility on physical speakers was not assessed; the source remains unmuted and no captured audio is attached to PiP.
 - The same 7 browser tests pass in installed Edge (Chromium 154), headless. Chrome for Testing 155/156 could not be launched on this host (spawn UNKNOWN), so direct Chrome playback is unverified. The runtime uses the shared Chromium APIs and feature detection; do not call Chrome tested. CI uses the installed Edge on Windows runners.
 - A clean `npm ci` followed by the full Brave check passes. The distributable ZIP passes CRC validation and every archived entry matches `dist` byte for byte. Source, ready-to-load `dist`, installation instructions, and a Windows/Edge CI workflow are included in the repository.
+- Hover UI update: all 13 checks and live YouTube verification pass in Brave. A visible-browser probe verifies paused/playing pointer-leave hiding, unchanged paused source state, no reappearance on source events, unobstructed frame screenshots, hover reappearance, and keyboard reappearance. The blur handler was checked with a dispatched blur event; switching to another native application was not automated. PiP and its opener can both report hasFocus=true, so focusing the opener alone is not a reliable blur test. Native title-bar removal remains unsupported.

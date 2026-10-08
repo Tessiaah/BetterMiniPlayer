@@ -65,11 +65,22 @@ export function createPlayer(pip: Window, source: HTMLVideoElement, close: () =>
   let idleTimer = 0;
   let feedbackTimer = 0;
   let playbackError = '';
+  let pointerInside = root.matches(':hover');
+  let keyboardInteracting = false;
+
+  const hideControls = (): void => {
+    pip.clearTimeout(idleTimer);
+    pip.clearTimeout(feedbackTimer);
+    root.dataset.idle = 'true';
+    feedback.hidden = true;
+    keyboardInteracting = false;
+  };
 
   const showControls = (): void => {
+    if (!pointerInside && !keyboardInteracting) return;
     root.dataset.idle = 'false';
     pip.clearTimeout(idleTimer);
-    if (!source.paused && !source.ended) idleTimer = pip.setTimeout(() => {
+    if (!source.paused && !source.ended && !keyboardInteracting) idleTimer = pip.setTimeout(() => {
       root.dataset.idle = 'true';
     }, 2200);
   };
@@ -86,7 +97,7 @@ export function createPlayer(pip: Window, source: HTMLVideoElement, close: () =>
     time.textContent = Number.isFinite(source.duration)
       ? `${formatTime(source.currentTime)} / ${formatTime(source.duration)}` : `${formatTime(source.currentTime)} · LIVE`;
     status.textContent = playbackError || (isAdvertisement(source) ? 'Advertisement · seeking unavailable' : source.ended ? 'Ended' : paused ? 'Paused' : source.readyState < 3 ? 'Buffering…' : '');
-    if (paused) { pip.clearTimeout(idleTimer); root.dataset.idle = 'false'; }
+    if (paused) pip.clearTimeout(idleTimer);
   };
   const play = async (): Promise<void> => {
     playbackError = '';
@@ -117,10 +128,33 @@ export function createPlayer(pip: Window, source: HTMLVideoElement, close: () =>
   closeButton.addEventListener('click', close, options);
   video.addEventListener('click', () => { void play(); }, options);
   still.addEventListener('click', () => { void play(); }, options);
-  root.addEventListener('pointermove', showControls, options);
-  root.addEventListener('pointerdown', showControls, options);
-  root.addEventListener('focusin', showControls, options);
+  const pointerActivity = (): void => {
+    pointerInside = true;
+    keyboardInteracting = false;
+    showControls();
+  };
+  root.addEventListener('pointerenter', pointerActivity, options);
+  root.addEventListener('pointermove', pointerActivity, options);
+  root.addEventListener('pointerdown', pointerActivity, options);
+  root.addEventListener('pointerleave', () => {
+    pointerInside = false;
+    hideControls();
+  }, options);
+  pip.addEventListener('blur', () => {
+    pointerInside = false;
+    hideControls();
+  }, options);
+  root.addEventListener('focusin', () => {
+    if (doc.activeElement?.matches(':focus-visible')) {
+      keyboardInteracting = true;
+      showControls();
+    }
+  }, options);
   doc.addEventListener('keydown', (event) => {
+    if (!event.altKey && !event.ctrlKey && !event.metaKey) {
+      keyboardInteracting = true;
+      showControls();
+    }
     // Let focused buttons handle Enter/Space themselves, avoiding a double toggle.
     if (event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
     if ((event.code === 'Space' || event.code === 'Enter') && (event.target as Element | null)?.closest('button')) return;
@@ -132,7 +166,7 @@ export function createPlayer(pip: Window, source: HTMLVideoElement, close: () =>
   for (const event of ['play', 'pause', 'ended', 'timeupdate', 'durationchange', 'loadedmetadata', 'waiting', 'playing', 'seeked']) {
     source.addEventListener(event, refresh, options);
   }
-  source.addEventListener('playing', showControls, options);
+  root.dataset.idle = 'true';
   refresh();
   showControls();
   return { video, still, refresh, dispose: () => {

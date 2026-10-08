@@ -171,7 +171,7 @@ var BetterMiniPlayer = (() => {
   };
 
   // src/ui/player.css
-  var player_default = ':root { color-scheme: dark; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #080a0d; color: #fff; }\n* { box-sizing: border-box; }\nhtml, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }\nbutton { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }\n.player { position: relative; width: 100%; height: 100%; isolation: isolate; background: #080a0d; }\n.video, .still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }\n[hidden] { display: none !important; }\n.overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(180deg, #0009, transparent 35%, transparent 50%, #000b); opacity: 1; transition: opacity 160ms ease; pointer-events: none; }\n.player[data-idle="true"] .overlay { opacity: 0; }\n.player[data-idle="true"] { cursor: none; }\n.player:has(:focus-visible) .overlay { opacity: 1; }\n.top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }\n.title { flex: 1; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; text-shadow: 0 1px 6px #000; }\n.icon-button { display: grid; place-items: center; width: 48px; height: 48px; padding: 12px; border: 1px solid #ffffff18; border-radius: 50%; background: #11151bbc; box-shadow: 0 4px 20px #0003; pointer-events: auto; transition: background 120ms ease, transform 120ms ease; }\n.icon-button:hover { background: #353b45e6; transform: scale(1.04); }\n.icon-button:active { transform: scale(.96); }\n.icon-button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; }\n.icon-button:disabled { opacity: .4; cursor: default; transform: none; }\n.icon-button svg { width: 100%; height: 100%; }\n.close { width: 30px; height: 30px; padding: 6px; border: 0; background: #11151b80; }\n.transport { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 20px; }\n.toggle { width: 64px; height: 64px; padding: 18px; background: #161c24df; }\n.bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px 14px; font-size: 11px; font-variant-numeric: tabular-nums; color: #ffffffe0; }\n.status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\n.time { flex-shrink: 0; }\n.feedback { position: absolute; left: 50%; top: 72%; transform: translateX(-50%); margin: 0; border-radius: 12px; padding: 6px 12px; background: #10151cdd; font-size: 12px; }\n@media (max-height: 180px) { .top { padding: 8px 12px; } .bottom { padding: 8px 12px; } .toggle { width: 48px; height: 48px; padding: 13px; } .icon-button:not(.toggle):not(.close) { width: 40px; height: 40px; padding: 9px; } }\n@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }\n';
+  var player_default = ':root { color-scheme: dark; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #080a0d; color: #fff; }\n* { box-sizing: border-box; }\nhtml, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }\nbutton { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }\n.player { position: relative; width: 100%; height: 100%; isolation: isolate; background: #080a0d; }\n.video, .still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }\n[hidden] { display: none !important; }\n.overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(180deg, #0005, transparent 30%, transparent 55%, #0008); opacity: 1; visibility: visible; transition: opacity 160ms ease, visibility 0s; pointer-events: none; }\n.player[data-idle="true"] .overlay { opacity: 0; visibility: hidden; transition: opacity 160ms ease, visibility 0s 160ms; }\n.player[data-idle="true"] { cursor: none; }\n.top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }\n.title { flex: 1; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; text-shadow: 0 1px 6px #000; }\n.icon-button { display: grid; place-items: center; width: 48px; height: 48px; padding: 12px; border: 0; border-radius: 50%; background: transparent; pointer-events: auto; transition: background 120ms ease, transform 120ms ease; }\n.icon-button:hover { background: #ffffff18; transform: scale(1.04); }\n.icon-button:active { transform: scale(.96); }\n.icon-button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; }\n.icon-button:disabled { opacity: .4; cursor: default; transform: none; }\n.icon-button svg { width: 100%; height: 100%; }\n.close { width: 30px; height: 30px; padding: 6px; }\n.transport { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 20px; }\n.toggle { width: 60px; height: 60px; padding: 17px; background: #373477; color: #e4e1ff; }\n.toggle:hover { background: #49468a; }\n.bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px 14px; font-size: 11px; font-variant-numeric: tabular-nums; color: #ffffffe0; }\n.status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\n.time { flex-shrink: 0; }\n.feedback { position: absolute; left: 50%; top: 72%; transform: translateX(-50%); margin: 0; border-radius: 12px; padding: 6px 12px; background: #10151cdd; font-size: 12px; }\n@media (max-height: 180px) { .top { padding: 8px 12px; } .bottom { padding: 8px 12px; } .toggle { width: 48px; height: 48px; padding: 13px; } .icon-button:not(.toggle):not(.close) { width: 40px; height: 40px; padding: 9px; } }\n@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }\n';
 
   // src/types.ts
   function errorMessage(error) {
@@ -269,10 +269,20 @@ var BetterMiniPlayer = (() => {
     let idleTimer = 0;
     let feedbackTimer = 0;
     let playbackError = "";
+    let pointerInside = root.matches(":hover");
+    let keyboardInteracting = false;
+    const hideControls = () => {
+      pip.clearTimeout(idleTimer);
+      pip.clearTimeout(feedbackTimer);
+      root.dataset.idle = "true";
+      feedback.hidden = true;
+      keyboardInteracting = false;
+    };
     const showControls = () => {
+      if (!pointerInside && !keyboardInteracting) return;
       root.dataset.idle = "false";
       pip.clearTimeout(idleTimer);
-      if (!source.paused && !source.ended) idleTimer = pip.setTimeout(() => {
+      if (!source.paused && !source.ended && !keyboardInteracting) idleTimer = pip.setTimeout(() => {
         root.dataset.idle = "true";
       }, 2200);
     };
@@ -287,10 +297,7 @@ var BetterMiniPlayer = (() => {
       title.textContent = source.ownerDocument.querySelector("h1.ytd-watch-metadata yt-formatted-string")?.textContent?.trim() || source.ownerDocument.title.replace(/ - YouTube$/, "");
       time.textContent = Number.isFinite(source.duration) ? `${formatTime(source.currentTime)} / ${formatTime(source.duration)}` : `${formatTime(source.currentTime)} \xB7 LIVE`;
       status.textContent = playbackError || (isAdvertisement(source) ? "Advertisement \xB7 seeking unavailable" : source.ended ? "Ended" : paused ? "Paused" : source.readyState < 3 ? "Buffering\u2026" : "");
-      if (paused) {
-        pip.clearTimeout(idleTimer);
-        root.dataset.idle = "false";
-      }
+      if (paused) pip.clearTimeout(idleTimer);
     };
     const play = async () => {
       playbackError = "";
@@ -336,10 +343,33 @@ var BetterMiniPlayer = (() => {
     still.addEventListener("click", () => {
       void play();
     }, options);
-    root.addEventListener("pointermove", showControls, options);
-    root.addEventListener("pointerdown", showControls, options);
-    root.addEventListener("focusin", showControls, options);
+    const pointerActivity = () => {
+      pointerInside = true;
+      keyboardInteracting = false;
+      showControls();
+    };
+    root.addEventListener("pointerenter", pointerActivity, options);
+    root.addEventListener("pointermove", pointerActivity, options);
+    root.addEventListener("pointerdown", pointerActivity, options);
+    root.addEventListener("pointerleave", () => {
+      pointerInside = false;
+      hideControls();
+    }, options);
+    pip.addEventListener("blur", () => {
+      pointerInside = false;
+      hideControls();
+    }, options);
+    root.addEventListener("focusin", () => {
+      if (doc.activeElement?.matches(":focus-visible")) {
+        keyboardInteracting = true;
+        showControls();
+      }
+    }, options);
     doc.addEventListener("keydown", (event) => {
+      if (!event.altKey && !event.ctrlKey && !event.metaKey) {
+        keyboardInteracting = true;
+        showControls();
+      }
       if (event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
       if ((event.code === "Space" || event.code === "Enter") && event.target?.closest("button")) return;
       if (event.code === "Space" || event.code === "KeyK") {
@@ -359,7 +389,7 @@ var BetterMiniPlayer = (() => {
     for (const event of ["play", "pause", "ended", "timeupdate", "durationchange", "loadedmetadata", "waiting", "playing", "seeked"]) {
       source.addEventListener(event, refresh, options);
     }
-    source.addEventListener("playing", showControls, options);
+    root.dataset.idle = "true";
     refresh();
     showControls();
     return { video, still, refresh, dispose: () => {
